@@ -7,255 +7,472 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.179.1/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.birds.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-bg: #6c63ff;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #f8f9fa;
         }
-
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: #ffffff;
-            color: #333;
+            background: var(--bg-light);
+            color: var(--text-dark);
         }
-
+        
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-weight: 700;
+            font-weight: 600;
         }
-
+        
         .vanta-canvas {
             position: absolute;
-            inset: 0;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
         }
-
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile-card {
+            transition: all 0.3s ease;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .experience-item {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .experience-item:hover {
+            border-left-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
         .nav-link:hover {
-            color: #6c63ff;
+            color: var(--secondary-color);
         }
-
-        .experience-card:hover {
-            background: #f9fafb;
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
         }
-
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--bg-light);
+            color: var(--secondary-color);
+        }
+        
+        .typing-animation {
+            overflow: hidden;
+            border-right: 2px solid var(--secondary-color);
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--secondary-color); }
+        }
+        
         .scroll-reveal {
             opacity: 0;
-            transform: translateY(25px);
+            transform: translateY(30px);
             transition: all 0.6s ease;
         }
+        
         .scroll-reveal.revealed {
             opacity: 1;
             transform: translateY(0);
         }
     </style>
+<base target="_blank">
 </head>
-
 <body>
-
-<!-- NAVBAR -->
-<nav class="fixed top-0 w-full bg-white/90 backdrop-blur z-50 border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="flex justify-between h-16 items-center">
-            <h1 class="text-lg font-semibold">Bonnie Liu</h1>
-            <div class="hidden md:flex space-x-8 text-sm">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#experience" class="nav-link">Experience</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- HERO -->
-<section id="home" class="relative min-h-screen flex items-center justify-center text-center">
-    <div id="vanta-bg" class="vanta-canvas"></div>
-
-    <div class="relative z-10 px-6">
-        <h1 class="hero-title text-white text-6xl md:text-7xl mb-6">
-            Bonnie Liu
-        </h1>
-
-        <p class="text-blue-100 text-xl md:text-2xl mb-10">
-            Machine Learning Engineer @ Pinterest
-        </p>
-
-        <p class="text-blue-100 max-w-xl mx-auto leading-relaxed mb-12">
-            Passionate about building intelligent systems that make a difference.
-            Currently working on Search Relevance at Pinterest, focused on ML engineering.
-        </p>
-
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#experience"
-               class="bg-white text-indigo-700 font-semibold px-8 py-3 rounded-lg shadow hover:bg-gray-200 transition">
-                View Experience
-            </a>
-            <a href="lekiwi.html"
-               class="border border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-indigo-700 transition">
-                View Projects
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 scroll-reveal">
-            <h2 class="text-4xl font-bold text-gray-900">About Me</h2>
-            <div class="w-20 h-1 bg-indigo-600 mx-auto mt-4"></div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <!-- Profile Card -->
-            <div class="scroll-reveal">
-                <div class="bg-white border border-gray-200 rounded-2xl shadow p-8 text-center">
-                    <div class="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold">Bonnie Liu</h3>
-                    <p class="text-indigo-600 font-medium mb-6">ML Engineer @ Pinterest</p>
-
-                    <div class="space-y-3 text-gray-700 text-sm">
-                        <div class="flex justify-center items-center gap-3">
-                            <i class="fas fa-map-marker-alt text-indigo-600"></i> Santa Clara, CA
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">Bonnie Liu</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="#about" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+                        <a href="#experience" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Experience</a>
+                        <div class="dropdown relative">
+                            <button class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium cursor-pointer">
+                                Projects <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="lekiwi.html" class="dropdown-item">LeKiwi</a>
+                            </div>
                         </div>
-                        <div class="flex justify-center items-center gap-3">
-                            <i class="fas fa-envelope text-indigo-600"></i> bonnieliu2002@gmail.com
-                        </div>
+                        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Contact</a>
                     </div>
                 </div>
             </div>
+        </div>
+    </nav>
 
-            <!-- About Text -->
-            <div class="scroll-reveal">
-                <h3 class="text-3xl font-semibold mb-6">Hello! I'm Bonnie</h3>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    I'm a passionate Machine Learning Engineer currently working on the Search Relevance team at Pinterest.
-                    I love building intelligent systems that improve how millions of people discover content.
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div id="vanta-bg" class="vanta-canvas"></div>
+        <div class="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="hero-title text-5xl md:text-7xl font-bold text-white mb-6">
+                    Bonnie Liu
+                </h1>
+                <div class="typing-animation text-xl md:text-2xl text-blue-100 mb-8">
+                    Machine Learning Engineer @ Pinterest
+                </div>
+                <p class="text-lg text-blue-50 mb-12 max-w-2xl mx-auto leading-relaxed">
+                    Passionate about building intelligent systems that make a difference. 
+                    Currently working on Search Relevance at Pinterest, focused on ML engineering.
                 </p>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    My background includes machine learning, NLP, robotics, and large-scale distributed systems.
-                </p>
-                <p class="text-gray-700 leading-relaxed">
-                    Outside of work, I enjoy playing basketball, exploring new restaurants, and reading.
-                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#experience" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        View Experience
+                    </a>
+                    <a href="lekiwi.html" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-semibold transition-all duration-300">
+                        View Projects
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- EXPERIENCE -->
-<section id="experience" class="py-20 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-14 scroll-reveal">
-            <h2 class="text-4xl font-bold">Experience</h2>
-            <div class="w-20 h-1 bg-indigo-600 mx-auto mt-4"></div>
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">About Me</h2>
+                <div class="w-24 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="scroll-reveal">
+                    <div class="profile-card bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                        <div class="text-center mb-6">
+                            <div class="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i class="fas fa-user text-4xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900">Bonnie Liu</h3>
+                            <p class="text-blue-600 font-medium">ML Engineer @ Pinterest</p>
+                        </div>
+                        
+                        <div class="space-y-4 text-gray-600">
+                            <div class="flex items-center">
+                                <i class="fas fa-graduation-cap text-blue-600 mr-3"></i>
+                                <span>Computer Science @ UCLA</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-blue-600 mr-3"></i>
+                                <span>Santa Clara, CA</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-blue-600 mr-3"></i>
+                                <span>bonnieliu2002@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scroll-reveal">
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-bold text-gray-900">Hello! I'm Bonnie</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            I'm a passionate Machine Learning Engineer currently working on the Search Relevance team at Pinterest. 
+                            My journey in AI and ML started at UCLA, where I developed a strong foundation in computer science 
+                            and discovered my love for building intelligent systems.
+                        </p>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            At Pinterest, I focus on improving semantic search relevance through cutting-edge ML techniques, working on 
+                            projects that impact millions of users worldwide.
+                        </p>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            When I'm not coding, I'm likely playing basketball, reading, or trying out new restaurants.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="space-y-6">
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Experience</h2>
+                <div class="w-24 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="space-y-8">
+                <!-- Pinterest -->
+                <div class="experience-item bg-white rounded-xl shadow-lg p-8 scroll-reveal">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fab fa-pinterest text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-900">Machine Learning Engineer</h3>
+                                    <p class="text-lg text-blue-600 font-medium">Pinterest</p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">2025 - Present</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium ml-2">Search Relevance Team</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Pinterest ML Engineer -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" class="w-12 h-12 rounded" />
-                <div>
-                    <h3 class="text-xl font-semibold">Machine Learning Engineer</h3>
-                    <p class="text-gray-600">Pinterest · Search Relevance</p>
+                <!-- Machine Learning Engineer Intern -->
+                <div class="experience-item bg-white rounded-xl shadow-lg p-8 scroll-reveal">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fab fa-pinterest text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-900">Machine Learning Engineer Intern</h3>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">Summer 2024</span>
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium ml-2">Search Relevance Team</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Software Engineer Intern -->
+                <div class="experience-item bg-white rounded-xl shadow-lg p-8 scroll-reveal">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-code text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-900">Software Engineer Intern</h3>
+                                    <p class="text-lg text-blue-600 font-medium">Tech Company</p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Summer 2021</span>
+                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium ml-2">Engineering Team</span>
+                            </div>
+                            <p class="text-gray-600 leading-relaxed">
+                                Developed scalable software solutions and contributed to backend systems. 
+                                Gained experience in full-stack development and agile methodologies. 
+                                Worked on features that served thousands of users.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teaching Assistant -->
+                <div class="experience-item bg-white rounded-xl shadow-lg p-8 scroll-reveal">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-900">Teaching Assistant</h3>
+                                    <p class="text-lg text-blue-600 font-medium">UCLA Computer Science</p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">2020 - 2023</span>
+                                <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium ml-2">CS Department</span>
+                            </div>
+                            <p class="text-gray-600 leading-relaxed">
+                                Assisted in teaching undergraduate computer science courses including Data Structures, 
+                                Algorithms, and Machine Learning. Led discussion sections, held office hours, 
+                                and helped students understand complex concepts.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- UCLA Researcher -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/UCLA_Bruins_primary_logo.png" class="w-12 h-12 rounded" />
-                <div>
-                    <h3 class="text-xl font-semibold">Researcher</h3>
-                    <p class="text-gray-600">UCLA · Neural Engineering & Computation Lab</p>
-                </div>
-            </div>
-
-            <!-- Pinterest Intern -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" class="w-12 h-12 rounded" />
-                <div>
-                    <h3 class="text-xl font-semibold">Machine Learning Intern</h3>
-                    <p class="text-gray-600">Pinterest · Search Relevance</p>
-                </div>
-            </div>
-
-            <!-- Apple ML Research Intern -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" class="w-10 h-10" />
-                <div>
-                    <h3 class="text-xl font-semibold">Machine Learning Research Intern</h3>
-                    <p class="text-gray-600">Apple · Siri & Information Intelligence</p>
-                </div>
-            </div>
-
-            <!-- UCLA TA -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/UCLA_Bruins_primary_logo.png" class="w-12 h-12 rounded" />
-                <div>
-                    <h3 class="text-xl font-semibold">Teaching Assistant</h3>
-                    <p class="text-gray-600">UCLA · CS 131 & CS 143</p>
-                </div>
-            </div>
-
-            <!-- Bloomberg SWE Intern -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Bloomberg_logo.svg" class="w-20" />
-                <div>
-                    <h3 class="text-xl font-semibold">Software Engineer Intern</h3>
-                    <p class="text-gray-600">Bloomberg · Portfolio Analytics Classifications</p>
-                </div>
-            </div>
-
-            <!-- UCLA Researcher NLP -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/UCLA_Bruins_primary_logo.png" class="w-12 h-12 rounded" />
-                <div>
-                    <h3 class="text-xl font-semibold">Researcher</h3>
-                    <p class="text-gray-600">UCLA · NLP Research</p>
-                </div>
-            </div>
-
-            <!-- Bloomberg SWE Intern #2 -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Bloomberg_logo.svg" class="w-20" />
-                <div>
-                    <h3 class="text-xl font-semibold">Software Engineer Intern</h3>
-                    <p class="text-gray-600">Bloomberg · Portfolio Analytics Intraday</p>
-                </div>
-            </div>
-
-            <!-- Meta / Facebook SWE Intern -->
-            <div class="experience-card bg-white border border-gray-200 rounded-xl p-6 flex items-center gap-4 scroll-reveal">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Meta_Platforms_Inc._logo.svg" class="w-14" />
-                <div>
-                    <h3 class="text-xl font-semibold">Software Engineer Intern</h3>
-                    <p class="text-gray-600">Meta · Ads Experiment Platform</p>
-                </div>
-            </div>
-
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- CONTACT -->
-<section id="contact" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold mb-6">Get In Touch</h2>
-        <div class="w-20 h-1 bg-indigo-600 mx-auto mb-10"></div>
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Get In Touch</h2>
+                <div class="w-24 h-1 bg-blue-600 mx-auto"></div>
+                <p class="text-xl text-gray-600 mt-4">Feel free to reach out for collaborations or just a friendly chat</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center scroll-reveal">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-envelope text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Email</h3>
+                        <p class="text-gray-600">bonnieliu2002@gmail.com</p>
+                    </div>
+                    
+                    <div class="text-center scroll-reveal">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fab fa-linkedin text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">LinkedIn</h3>
+                        <p class="text-gray-600">
+                            <a href="https://linkedin.com/in/bonnieliu2002" class="text-blue-600 hover:underline">
+                                linkedin.com/in/bonnieliu2002
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div class="text-center scroll-reveal">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Location</h3>
+                        <p class="text-gray-600">Santa Clara, CA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <p class="text-gray-600 text-lg mb-8">
-            Feel free to reach out for collaborations or questions.
-        </p>
+    <script>
+        // Initialize Vanta.js background
+        VANTA.BIRDS({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            backgroundColor: 0x2c3e50,
+            color1: 0x3498db,
+            color2: 0x2c3e50,
+            colorMode: 'lerpGradient',
+            birdSize: 1.20,
+            wingSpan: 25.00,
+            speedLimit: 3.00,
+            separation: 20.00,
+            alignment: 20.00,
+            cohesion: 20.00,
+            quantity: 3.00
+        });
 
-        <p class="text-indigo-600 text-xl font-medium">bonnieliu2002@gmail.com</p>
-        <p class="text-gray-600 mt-3">
-            <a href="https://linkedin.com/in/bonnieliu2002" class="underline">linkedin.com/in/bonnieliu2002</a>
-        </p>
-    </div>
-</section>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-white/95');
+                navbar.classList.remove('bg-white/90');
+            } else {
+                navbar.classList.add('bg-white/90');
+                navbar.classList.remove('bg-white/95');
+            }
+        });
+    </script>
+</body>
+</html>
