@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeKiwi - Bonnie Liu's Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.179.1/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        
+        .vanta-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--bg-light);
+            color: var(--secondary-color);
+        }
+        
+        .video-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .video-thumbnail::after {
+            content: '▶';
+            position: absolute;
+            top: 50%;
+            left: 52%;
+            transform: translate(-50%, -50%);
+            color: #3498db;
+            font-size: 24px;
+            z-index: 11;
+            transition: all 0.3s ease;
+        }
+        
+        .video-card:hover .video-thumbnail::before {
+            background: rgba(52, 152, 219, 0.9);
+        }
+        
+        .video-card:hover .video-thumbnail::after {
+            color: white;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+        }
+        
+        .close:hover {
+            color: #bbb;
+        }
+        
+        .tech-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 2px;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">Bonnie Liu</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="index.html#about" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+                        <a href="index.html#experience" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Experience</a>
+                        <div class="dropdown relative">
+                            <button class="nav-link text-blue-600 px-3 py-2 text-sm font-medium cursor-pointer">
+                                Projects <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="lekiki.html" class="dropdown-item text-blue-600 bg-blue-50">LeKiwi</a>
+                            </div>
+                        </div>
+                        <a href="index.html#contact" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div id="vanta-bg" class="vanta-canvas"></div>
+        <div class="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="hero-title text-5xl md:text-7xl font-bold text-white mb-6">
+                    LeKiwi
+                </h1>
+                <div class="text-xl md:text-2xl text-blue-100 mb-8">
+                    An Innovative Machine Learning Project
+                </div>
+                <p class="text-lg text-blue-50 mb-12 max-w-2xl mx-auto leading-relaxed">
+                    LeKiwi is a cutting-edge ML project that explores novel approaches to computer vision 
+                    and natural language processing. This project showcases advanced techniques in deep learning 
+                    and demonstrates practical applications of modern AI technologies.
+                </p>
+                <div class="flex flex-wrap justify-center gap-2 mb-8">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">PyTorch</span>
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">OpenCV</span>
+                    <span class="tech-tag">Transformers</span>
+                    <span class="tech-tag">FastAPI</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Project Overview</h2>
+                <div class="w-24 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="scroll-reveal">
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-bold text-gray-900">What is LeKiwi?</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            LeKiwi is an advanced machine learning project that combines computer vision and natural language 
+                            processing to create intelligent systems capable of understanding and analyzing visual content 
+                            with contextual awareness.
+                        </p>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            The project explores state-of-the-art architectures including transformer-based models, 
+                            convolutional neural networks, and multimodal learning approaches to solve complex AI challenges.
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-semibold text-gray-900">Key Features:</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                    Advanced image classification and object detection
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                    Natural language understanding and generation
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                    Multimodal fusion techniques
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                    Real-time processing capabilities
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                    Scalable architecture design
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scroll-reveal">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <i class="fas fa-robot text-4xl text-white"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-gray-900">Technical Stack</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <i class="fab fa-python text-3xl text-blue-600 mb-2"></i>
+                                <p class="font-medium text-gray-900">Python</p>
+                                <p class="text-sm text-gray-600">Primary Language</p>
+                            </div>
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <i class="fas fa-brain text-3xl text-orange-600 mb-2"></i>
+                                <p class="font-medium text-gray-900">PyTorch</p>
+                                <p class="text-sm text-gray-600">Deep Learning</p>
+                            </div>
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <i class="fas fa-eye text-3xl text-green-600 mb-2"></i>
+                                <p class="font-medium text-gray-900">OpenCV</p>
+                                <p class="text-sm text-gray-600">Computer Vision</p>
+                            </div>
+                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                                <i class="fas fa-server text-3xl text-red-600 mb-2"></i>
+                                <p class="font-medium text-gray-900">FastAPI</p>
+                                <p class="text-sm text-gray-600">Web Framework</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Gallery -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Demo Videos</h2>
+                <div class="w-24 h-1 bg-blue-600 mx-auto"></div>
+                <p class="text-xl text-gray-600 mt-4">Watch LeKiwi in action across various scenarios</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Video Card 1 -->
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('video1')">
+                    <div class="video-thumbnail aspect-video bg-gradient-to-br from-blue-400 to-purple-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">LeKiwi Object Detection Demo</h3>
+                        <p class="text-gray-600 mb-4">
+                            Real-time object detection showcasing the model's ability to identify and classify 
+                            multiple objects in complex scenes with high accuracy.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">YOLO</span>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Real-time</span>
+                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">Multi-class</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card 2 -->
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('video2')">
+                    <div class="video-thumbnail aspect-video bg-gradient-to-br from-green-400 to-blue-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">NLP Text Analysis</h3>
+                        <p class="text-gray-600 mb-4">
+                            Demonstration of LeKiwi's natural language processing capabilities, including 
+                            sentiment analysis, entity recognition, and text summarization.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">BERT</span>
+                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">NLP</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded text-sm">Transformers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card 3 -->
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('video3')">
+                    <div class="video-thumbnail aspect-video bg-gradient-to-br from-purple-400 to-pink-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Multimodal Fusion</h3>
+                        <p class="text-gray-600 mb-4">
+                            Advanced demonstration of combining visual and textual information to create 
+                            comprehensive understanding of complex multimedia content.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-pink-100 text-pink-800 px-2 py-1 rounded text-sm">Multimodal</span>
+                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">Fusion</span>
+                            <span class="bg-teal-100 text-teal-800 px-2 py-1 rounded text-sm">Attention</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card 4 -->
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('video4')">
+                    <div class="video-thumbnail aspect-video bg-gradient-to-br from-orange-400 to-red-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Performance Optimization</h3>
+                        <p class="text-gray-600 mb-4">
+                            Technical deep-dive into the optimization techniques used to achieve real-time 
+                            performance while maintaining high accuracy in production environments.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm">Optimization</span>
+                            <span class="bg-cyan-100 text-cyan-800 px-2 py-1 rounded text-sm">CUDA</span>
+                            <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-sm">Quantization</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card 5 -->
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('video5')">
+                    <div class="video-thumbnail aspect-video bg-gradient-to-br from-teal-400 to-cyan-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-cyan-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Web Interface Demo</h3>
+                        <p class="text-gray-600 mb-4">
+                            User-friendly web interface showcasing how LeKiwi can be integrated into 
+                            practical applications with intuitive controls and real-time feedback.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-violet-100 text-violet-800 px-2 py-1 rounded text-sm">React</span>
+                            <span class="bg-rose-100 text-rose-800 px-2 py-1 rounded text-sm">FastAPI</span>
+                            <span class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm">WebSocket</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card 6 -->
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('video6')">
+                    <div class="video-thumbnail aspect-video bg-gradient-to-br from-indigo-400 to-purple-500 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Edge Deployment</h3>
+                        <p class="text-gray-600 mb-4">
+                            Demonstration of LeKiwi running on edge devices, showcasing efficient model 
+                            deployment and real-time inference on resource-constrained hardware.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-lime-100 text-lime-800 px-2 py-1 rounded text-sm">Edge AI</span>
+                            <span class="bg-fuchsia-100 text-fuchsia-800 px-2 py-1 rounded text-sm">Mobile</span>
+                            <span class="bg-sky-100 text-sky-800 px-2 py-1 rounded text-sm">TensorRT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Details -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Technical Architecture</h2>
+                <div class="w-24 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="scroll-reveal">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-layer-group text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Model Architecture</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Hybrid architecture combining CNNs for visual processing with transformer-based 
+                            models for sequential data, optimized for both accuracy and efficiency.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="scroll-reveal">
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-8 text-center">
+                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-database text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Data Pipeline</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Robust data processing pipeline with automated augmentation, quality validation, 
+                            and distributed training capabilities for handling large-scale datasets.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="scroll-reveal">
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8 text-center">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-rocket text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Deployment</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Containerized deployment with auto-scaling, monitoring, and A/B testing 
+                            capabilities for production-ready machine learning services.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">Bonnie Liu</h3>
+                <p class="text-gray-400 mb-6">Machine Learning Engineer passionate about AI innovation</p>
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="https://linkedin.com/in/bonnieliu2002" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin text-2xl"></i>
+                    </a>
+                    <a href="mailto:bonnieliu2002@example.com" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-envelope text-2xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm">
+                    © 2024 Bonnie Liu. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <video id="modalVideo" controls class="w-full h-full">
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Vanta.js background
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x3f7cac,
+            backgroundColor: 0x1a1a2e,
+            points: 8.00,
+            maxDistance: 25.00,
+            spacing: 18.00
+        });
+
+        // Video modal functionality
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        function openModal(videoId) {
+            modal.style.display = 'block';
+            // In a real implementation, you would set the actual video source
+            // modalVideo.src = `videos/${videoId}.mp4`;
+            modalVideo.play();
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+            modalVideo.pause();
+            modalVideo.src = '';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+                modalVideo.pause();
+                modalVideo.src = '';
+            }
+        }
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-white/95');
+                navbar.classList.remove('bg-white/90');
+            } else {
+                navbar.classList.add('bg-white/90');
+                navbar.classList.remove('bg-white/95');
+            }
+        });
+    </script>
+</body>
+</html>
