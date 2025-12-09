@@ -426,7 +426,8 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Data Collection for Collecting Empty Bottle</h3>
                         <p class="text-gray-600 mb-4">
-                            I collected 50 episodes of data for the task of picking up an empty water bottle. This video shows 
+                            I collected 50 episodes of data for the task of picking up an empty water bottle. The positions of the empty water bottle
+                            and the full water bottle were initialized randomly along a 15 cm line (at least 6 cm apart). This video shows 
                             one of those episodes from the wrist-camera perspective. I teleoperated the robot from far away,
                             relying solely on the wrist-camera view for control.
                         </p>
@@ -434,10 +435,10 @@
                 </div>
 
                 <!-- Video Card 4 -->
-                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1')">
+                <div class="video-card bg-white rounded-xl shadow-lg overflow-hidden scroll-reveal" onclick="openModal('https://www.youtube.com/watch?v=50aj9z_81W4')">
                     <div class="aspect-video">
                         <iframe 
-                            src="https://www.youtube.com/embed/Vwmgvg5xUfc" 
+                            src="https://www.youtube.com/embed/50aj9z_81W4"
                             width="100%"
                             height="100%"
                             frameborder="0"
@@ -446,10 +447,10 @@
                         ></iframe>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">NLP Text Analysis</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Inference for Collecting Empty Bottle</h3>
                         <p class="text-gray-600 mb-4">
-                            Demonstration of LeKiwi's natural language processing capabilities, including 
-                            sentiment analysis, entity recognition, and text summarization.
+                            Using the 50 demonstration episodes I collected, I trained an ACT model to perform the empty-bottle collection task. 
+                            In evaluation, 14 of the 25 inference episodes were successful. This video shows one of those inference episodes.
                         </p>
                         <div class="flex flex-wrap gap-2">
                             <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">BERT</span>
