@@ -246,6 +246,7 @@
                     <span class="tech-tag">Robotics</span>
                     <span class="tech-tag">Transformers</span>
                     <span class="tech-tag">Imitation Learning</span>
+                    <span class='tech-tag">OpenCV</span>
                 </div>
             </div>
         </div>
@@ -264,79 +265,67 @@
                     <div class="space-y-6">
                         <h3 class="text-3xl font-bold text-gray-900">What is LeKiwi?</h3>
                         <p class="text-lg text-gray-600 leading-relaxed">
-                            LeKiwi is an advanced machine learning project that combines computer vision and natural language 
-                            processing to create intelligent systems capable of understanding and analyzing visual content 
-                            with contextual awareness.
+                            LeKiwi is a low-cost mobile manipulation robot that I built from scratch as part of my 
+                            UCLA M.S. Computer Science Capstone project, under the guidance of Professor Jonathan Kao. 
+                            The robot integrates perception, grasping, and control using modern imitation-learning 
+                            techniques within the Hugging Face LeRobot ecosystem.
                         </p>
                         <p class="text-lg text-gray-600 leading-relaxed">
-                            The project explores state-of-the-art architectures including transformer-based models, 
-                            convolutional neural networks, and multimodal learning approaches to solve complex AI challenges.
+                            I experimented with various tasks, but for my final project, I chose to have LeKiwi focus on collecting an empty water bottle.
+                            I teleoperated LeKiwi to collect real-world demonstrations and trained an 
+                            Action Chunking with Transformers (ACT) policy to perform an end-to-end manipulation task: 
+                            identifying an empty water bottle, grasping it without disturbing a nearby full bottle, 
+                            and depositing it into a cart. Because of cheap, low-quality hardware, LeKiwi was not always consistent, and this demonstrates
+                            the tradeoff between reliability and operating on low-cost hardware. 
                         </p>
+    
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-semibold text-gray-900">Resources:</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-alt text-blue-600 mr-3"></i>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium">
+                                        Capstone Paper (PDF) — Coming Soon
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-tools text-green-600 mr-3"></i>
+                                    <a href="https://docs.google.com/document/d/1IN3tzRw-3-lilND3QcM1UuEyitI-AkRCHnf5MkvUZ6c/edit?tab=t.0" 
+                                       target="_blank" 
+                                       class="text-blue-600 hover:underline font-medium">
+                                        Knowledge Transfer & Build Guide
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         
                         <div class="space-y-4">
                             <h4 class="text-xl font-semibold text-gray-900">Key Features:</h4>
                             <ul class="space-y-2 text-gray-600">
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Advanced image classification and object detection
+                                    Custom-built hardware: 3D-printed frame, Raspberry Pi 5 control stack
                                 </li>
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Natural language understanding and generation
+                                    Real-world demonstration collection via teleoperation
                                 </li>
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Multimodal fusion techniques
+                                    Vision-based object identification using ResNet-18
                                 </li>
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Real-time processing capabilities
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Scalable architecture design
+                                    End-to-end manipulation using ACT imitation-learning policies
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="scroll-reveal">
-                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8">
-                        <div class="text-center mb-6">
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-                                <i class="fas fa-robot text-4xl text-white"></i>
-                            </div>
-                            <h4 class="text-xl font-bold text-gray-900">Technical Stack</h4>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
-                                <i class="fab fa-python text-3xl text-blue-600 mb-2"></i>
-                                <p class="font-medium text-gray-900">Python</p>
-                                <p class="text-sm text-gray-600">Primary Language</p>
-                            </div>
-                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
-                                <i class="fas fa-brain text-3xl text-orange-600 mb-2"></i>
-                                <p class="font-medium text-gray-900">PyTorch</p>
-                                <p class="text-sm text-gray-600">Deep Learning</p>
-                            </div>
-                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
-                                <i class="fas fa-eye text-3xl text-green-600 mb-2"></i>
-                                <p class="font-medium text-gray-900">OpenCV</p>
-                                <p class="text-sm text-gray-600">Computer Vision</p>
-                            </div>
-                            <div class="text-center p-4 bg-white rounded-lg shadow-sm">
-                                <i class="fas fa-server text-3xl text-red-600 mb-2"></i>
-                                <p class="font-medium text-gray-900">FastAPI</p>
-                                <p class="text-sm text-gray-600">Web Framework</p>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- Video Gallery -->
     <section class="py-20 bg-gray-50">
