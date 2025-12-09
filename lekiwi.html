@@ -426,10 +426,9 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Data Collection for Collecting Empty Bottle</h3>
                         <p class="text-gray-600 mb-4">
-                            I collected 50 episodes of data for the task of picking up an empty water bottle. The positions of the empty water bottle
-                            and the full water bottle were initialized randomly along a 15 cm line (at least 6 cm apart). This video shows 
-                            one of those episodes from the wrist-camera perspective. I teleoperated the robot from far away,
-                            relying solely on the wrist-camera view for control.
+                            I collected 50 episodes for the task of picking up an empty water bottle, with the empty and full bottles placed randomly along
+                            a 15 cm line (at least 6 cm apart). This video shows one of those episodes from the wrist-camera perspective. I teleoperated the robot
+                            remotely, relying solely on the wrist-camera feed.
                         </p>
                     </div>
                 </div>
@@ -449,11 +448,12 @@
                     <div class="p-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Inference for Collecting Empty Bottle</h3>
                         <p class="text-gray-600 mb-4">
-                            Using the 50 demonstration episodes I collected, I trained an ACT model to perform the empty-bottle collection task. 
-                            In evaluation, 14 of the 25 inference episodes were successful. This video shows one of those inference episodes.
+                            Using the 50 demonstration episodes I collected, I trained an ACT model to perform the empty-bottle collection task.
+                            During evaluation, the policy succeeded in 14 out of 25 inference trials, consistently identifying the correct bottle
+                            but often failing at the grasping stage. This video shows one of those inference episodes.
                         </p>
                     </div>
-                </div>>
+                </div>
                 </div>
             </div>
         </div>
