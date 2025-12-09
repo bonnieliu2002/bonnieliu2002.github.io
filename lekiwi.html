@@ -264,15 +264,19 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="scroll-reveal">
                     <div class="space-y-6">
-                        <h3 class="text-3xl font-bold text-gray-900">What is LeKiwi?</h3>
                         <p class="text-lg text-gray-600 leading-relaxed">
-                            LeKiwi is an advanced machine learning project that combines computer vision and natural language 
-                            processing to create intelligent systems capable of understanding and analyzing visual content 
-                            with contextual awareness.
+                            LeKiwi is a low-cost mobile manipulation robot that I built from scratch as part of my 
+                            UCLA Computer Engineering Capstone project, under the guidance of Professor Jonathan Kao. 
+                            The robot integrates perception, grasping, and control using modern imitation-learning 
+                            techniques within the Hugging Face LeRobot ecosystem.
                         </p>
                         <p class="text-lg text-gray-600 leading-relaxed">
-                            The project explores state-of-the-art architectures including transformer-based models, 
-                            convolutional neural networks, and multimodal learning approaches to solve complex AI challenges.
+                            I experimented with various tasks, but for my final project, I chose to have LeKiwi focus on collecting an empty water bottle.
+                            I teleoperated LeKiwi to collect real-world demonstrations and trained an 
+                            Action Chunking with Transformers (ACT) policy to perform an end-to-end manipulation task: 
+                            identifying an empty water bottle, grasping it without disturbing a nearby full bottle, 
+                            and depositing it into a cart. Because of cheap, low-quality hardware, LeKiwi was not always consistent, and this demonstrates
+                            the tradeoff between reliability and operating on low-cost hardware.
                         </p>
                         
                         <div class="space-y-4">
@@ -280,23 +284,19 @@
                             <ul class="space-y-2 text-gray-600">
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Advanced image classification and object detection
+                                    Custom-built hardware: 3D-printed frame, Raspberry Pi 5 control stack
                                 </li>
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Natural language understanding and generation
+                                    Real-world demonstration collection via teleoperation
                                 </li>
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Multimodal fusion techniques
+                                    Vision-based object identification using ResNet-18
                                 </li>
                                 <li class="flex items-center">
                                     <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Real-time processing capabilities
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                    Scalable architecture design
+                                    End-to-end manipulation using ACT imitation-learning policies
                                 </li>
                             </ul>
                         </div>
